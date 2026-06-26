@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  products    Product[]
+}
+
+model Product {
+  id            String     @id @default(uuid())
+  barcode       String     @unique
+  name          String
+  model         String?
+  categoryId    String
+  category      Category   @relation(fields: [categoryId], references: [id])
+  purchasePrice Float
+  sellingPrice  Float
+  quantity      Int
+  image         String?
+  saleItems     SaleItem[]
+}
+
+model Customer {
+  id           String        @id @default(uuid())
+  firstName    String
+  lastName     String
+  phone        String        @unique
+  createdAt    DateTime      @default(now())
+  sales        Sale[]
+  debtPayments DebtPayment[]
+}
+
+model SaleItem {
+  id            String  @id @default(uuid())
+  saleId        String
+  sale          Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product @relation(fields: [productId], references: [id])
+  name          String
+  unitPrice     Float
+  purchasePrice Float
+  quantity      Int
+}
+
+model Sale {
+  id            String        @id @default(uuid())
+  invoiceNumber String        @unique
+  createdAt     DateTime      @default(now())
+  employee      String
+  customerId    String?
+  customer      Customer?     @relation(fields: [customerId], references: [id])
+  items         SaleItem[]
+  subtotal      Float
+  discount      Float
+  total         Float
+  paymentType   String        // "cash" | "card" | "debt"
+  downPayment   Float?
+  remainingDebt Float?
+  debtPayments  DebtPayment[]
+}
+
+model DebtPayment {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  saleId     String?
+  sale       Sale?    @relation(fields: [saleId], references: [id])
+  amount     Float
+  createdAt  DateTime @default(now())
+}
+
+model Settings {
+  id        String @id @default("singleton")
+  storeName String
+  phone     String
+  address   String
+  employee  String
+}
