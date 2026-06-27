@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for avtoproject on 2026-06-27T11:52:22Z
+# fly.toml app configuration file generated for avtoproject-jgwjeg on 2026-06-27T12:25:31Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'avtoproject'
+app = 'avtoproject-jgwjeg'
 primary_region = 'arn'
 
 [build]
@@ -16,7 +16,7 @@ primary_region = 'arn'
   auto_extend_size_limit = '10GB'
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
